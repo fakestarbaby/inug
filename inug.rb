@@ -11,4 +11,12 @@ messages = Slack.client.search_all(
   query: "on:#{SLACK_TARGET_DATE.strftime("%Y-%m-%d")} in:#{ENV["SLACK_TARGET_CHANNEL"]}",
 )
 
-pp messages
+channels = Slack.client.channels_list()["channels"]
+target_channel = channels.select {|channel| channel["name"] == ENV["SLACK_TARGET_CHANNEL"] }.first
+
+messages["messages"]["matches"].each do |message|
+  reactions = Slack.client.reactions_get(channel: target_channel["id"], timestamp: message["ts"])
+  next if reactions["message"]["reactions"].nil?
+
+  pp reactions["message"]["reactions"]
+end
