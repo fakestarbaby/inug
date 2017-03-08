@@ -11,4 +11,7 @@ messages = Slack.client.search_all(
   query: "on:#{SLACK_TARGET_DATE.strftime("%Y-%m-%d")} in:#{ENV["SLACK_TARGET_CHANNEL"]}",
 )
 
-pp messages
+channels = Slack.client.channels_list()["channels"]
+target_channel = channels.select {|channel| channel["name"] == ENV["SLACK_TARGET_CHANNEL"] }.first
+
+pp target_channel
