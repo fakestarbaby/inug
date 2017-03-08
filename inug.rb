@@ -14,4 +14,9 @@ messages = Slack.client.search_all(
 channels = Slack.client.channels_list()["channels"]
 target_channel = channels.select {|channel| channel["name"] == ENV["SLACK_TARGET_CHANNEL"] }.first
 
-pp target_channel
+messages["messages"]["matches"].each do |message|
+  reactions = Slack.client.reactions_get(channel: target_channel["id"], timestamp: message["ts"])
+  next if reactions["message"]["reactions"].nil?
+
+  pp reactions["message"]["reactions"]
+end
